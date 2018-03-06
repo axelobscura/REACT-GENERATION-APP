@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom'
+import data from './store_directory.json';
 
 export default class MapContainer extends Component {
 
@@ -13,7 +14,6 @@ export default class MapContainer extends Component {
         ]
     }
 
-    customData = require('./store_directory.json');
 
     componentDidUpdate() {
         this.loadMap();
@@ -33,26 +33,32 @@ export default class MapContainer extends Component {
                 mapTypeId: 'roadmap'
             })
 
-            this.map = new maps.Map(node, mapConfig);
-            this.infowindow = new google.maps.InfoWindow();
-            this.service = new google.maps.places.PlacesService(this.map);
-            this.geocoder = new google.maps.Geocoder();
+            const losdatos = JSON.stringify(data);
 
+            console.log(data);
+            //console.log(losdatos);
+            //console.log(JSON.parse(losdatos));
+            console.log(losdatos);
+
+            const infowindow = new google.maps.InfoWindow();
+            const geocoder = new google.maps.Geocoder();
+            this.map = new maps.Map(node, mapConfig);
+            this.service = new google.maps.places.PlacesService(this.map);
             this.state.locations.forEach(location => {
-                this.geocoder.geocode({
-                    address: location.address
-                });
+                
                 const marker = new google.maps.Marker({
                     position: location.location,
                     map: this.map,
                     title: location.name
                 });
                 google.maps.event.addListener(marker, 'click', function() {
-                    this.infowindow.setContent('<div><strong>' + location.name + '</strong><br>' +
+                    console.log('hola');
+                    infowindow.setContent('<div><strong>' + location.name + '</strong><br>' +
                         'Place ID: ' + location.name + '<br>' +
                         location.name + '</div>');
-                    this.infowindowinfowindow.open(this.map, this);
+                    infowindow.open(this.map, this);
                 });
+
             })
 
         }
